@@ -3,6 +3,111 @@
 
 Webpack plugin that emits a json file with assets paths.
 
+This is a fork of the original plugin. I needed a way to get all assets emitted by webpack, including images, fonts, entry chunks and lazy chunks. The original `assets-webpack-plugin` only emitted entry chunks plus chunks added by CommonsChunkPlugin. This fork adds an option which is defaulted to `true` called `allAssets` which adds a new property in the emitted manifest file called `assets` where all assets emitted by webpack will be listed.
+
+Additionally, I needed a way to use long term caching on the newly added assets, so this options will also remove any hash included in the file name (if it exists), as long as it is separated by two `.`s, such as `app.bundle.d1710755052417cf8694.js`, `app.d1710755052417cf8694.css`, etc. If there is no hash, the filename will not be modified.
+
+Chunks will be separated into their own property in the manifest file, as long as the work `chunk` is in the filename, such as `lazy.chunk.d1710755052417cf8694.js`
+
+Example of new output:
+
+```
+{
+  "app": {
+    "js": "js/app.bundle.481b2b29ded24baf9cc8.js",
+    "css": "/css/app.style.481b2b29ded24baf9cc8.css"
+  },
+  "commons": {
+    "js": "js/commons.bundle.602bd822aea191b8eb30.js"
+  },
+  "commons-lazy-app": {
+    "js": "js/chunks/commons-lazy-app.chunk.cb04840fe68e848eb8e6.js"
+  },
+  "polyfills": {
+    "js": "js/polyfills.bundle.541b6d15fafdec98d3f8.js"
+  },
+  "vendors": {
+    "js": "js/vendors.bundle.636876e2051c910a7ef8.js"
+  },
+  "webpack-runtime": {
+    "json": "chunk-manifest.json",
+    "js": "js/webpack-runtime.783c2d7e8be43f105f92.js"
+  },
+  "chunks": {
+    "billing.chunk.js": "js/chunks/billing.chunk.b3bcb606396f0c96623a.js",
+    "commons-lazy-app.chunk.js": "js/chunks/commons-lazy-app.chunk.cb04840fe68e848eb8e6.js",
+    "dashboard.chunk.js": "js/chunks/dashboard.chunk.d1710755052417cf8694.js",
+    "listing.chunk.js": "js/chunks/listing.chunk.07cd2c0d2aceefba3d44.js",
+    "login.chunk.js": "js/chunks/login.chunk.b5d11e92c538bca40a1d.js"
+  },
+  "assets": {
+    "app.style.css": "/css/app.style.481b2b29ded24baf9cc8.css",
+    "lg.eot": "/fonts/lg.eot",
+    "lg.ttf": "/fonts/lg.ttf",
+    "asset-manifest.json": "asset-manifest.json",
+    "lg.svg": "assets/images/lg.svg",
+    "loading.gif": "assets/images/loading.gif",
+    "video-play.png": "assets/images/video-play.png",
+    "vimeo-play.png": "assets/images/vimeo-play.png",
+    "youtube-play.png": "assets/images/youtube-play.png",
+    "chunk-manifest.json": "chunk-manifest.json",
+    "loading-animation.css": "css/loading-animation.3c59cac8d7d1a78d697f06c0dc51e1b3.css",
+    "MaterialIcons-Regular.eot": "fonts/MaterialIcons-Regular.eot",
+    "MaterialIcons-Regular.svg": "fonts/MaterialIcons-Regular.svg",
+    "MaterialIcons-Regular.ttf": "fonts/MaterialIcons-Regular.ttf",
+    "MaterialIcons-Regular.woff": "fonts/MaterialIcons-Regular.woff",
+    "MaterialIcons-Regular.woff2": "fonts/MaterialIcons-Regular.woff2",
+    "OpenSans-Light.ttf": "fonts/OpenSans-Light.ttf",
+    "Roboto-Bold.woff": "fonts/Roboto-Bold.woff",
+    "Roboto-Bold.woff2": "fonts/Roboto-Bold.woff2",
+    "Roboto-Light.woff": "fonts/Roboto-Light.woff",
+    "Roboto-Light.woff2": "fonts/Roboto-Light.woff2",
+    "Roboto-Medium.woff": "fonts/Roboto-Medium.woff",
+    "Roboto-Medium.woff2": "fonts/Roboto-Medium.woff2",
+    "Roboto-Regular.woff": "fonts/Roboto-Regular.woff",
+    "Roboto-Regular.woff2": "fonts/Roboto-Regular.woff2",
+    "Roboto-Thin.woff": "fonts/Roboto-Thin.woff",
+    "Roboto-Thin.woff2": "fonts/Roboto-Thin.woff2",
+    "humans.txt": "humans.txt",
+    "alert-notifications.png": "icons/alert-notifications.png",
+    "arrow-down.svg": "icons/arrow-down.svg",
+    "arrow-up.svg": "icons/arrow-up.svg",
+    "card-amex.svg": "icons/card-amex.svg",
+    "card-mastercard.svg": "icons/card-mastercard.svg",
+    "card-placeholder.svg": "icons/card-placeholder.svg",
+    "card-visa.svg": "icons/card-visa.svg",
+    "circle-grey.svg": "icons/circle-grey.svg",
+    "coupon1.png": "icons/coupon1.png",
+    "coupon2.png": "icons/coupon2.png",
+    "default-avatar.svg": "icons/default-avatar.svg",
+    "dot-blue.svg": "icons/dot-blue.svg",
+    "dot-green.svg": "icons/dot-green.svg",
+    "dot-purple.svg": "icons/dot-purple.svg",
+    "email.svg": "icons/email.svg",
+    "favicon.ico": "icons/favicon.ico",
+    "fullscreen-enter.svg": "icons/fullscreen-enter.svg",
+    "fullscreen-exit.svg": "icons/fullscreen-exit.svg",
+    "password-icon.png": "icons/password-icon.png",
+    "phone.svg": "icons/phone.svg",
+    "profile-picture.png": "icons/profile-picture.png",
+    "question-mark.svg": "icons/question-mark.svg",
+    "success-checkmark.png": "icons/success-checkmark.png",
+    "user-icon.png": "icons/user-icon.png",
+    "logo-atlas-dark.svg": "images/logo-atlas-dark.svg",
+    "logo-atlas-light.svg": "images/logo-atlas-light.svg",
+    "logo-nighthawk-light.png": "images/logo-nighthawk-light.png",
+    "app.bundle.js": "js/app.bundle.481b2b29ded24baf9cc8.js",
+    "commons.bundle.js": "js/commons.bundle.602bd822aea191b8eb30.js",
+    "app.map": "js/maps/app.783c2d7e8be43f105f92.map",
+    "polyfills.bundle.js": "js/polyfills.bundle.541b6d15fafdec98d3f8.js",
+    "vendors.bundle.js": "js/vendors.bundle.636876e2051c910a7ef8.js",
+    "webpack-runtime.js": "js/webpack-runtime.783c2d7e8be43f105f92.js",
+    "robots.txt": "robots.txt",
+    "service-worker.js": "service-worker.js"
+  }
+}
+```
+
 ## Table of Contents
 
 - [Why Is This Useful?](#why-is-this-useful)
