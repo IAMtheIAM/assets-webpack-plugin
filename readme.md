@@ -98,7 +98,22 @@ module.exports = {
 
 ### Options
 
-You can pass the following options:
+You can pass the following options
+
+#### `allAssets`
+
+Optional. `true` by default.
+
+Inserts all assets emitted by webpack under a new property called `assets`, 
+such as images, fonts, icons, and lazy chunks. The entry chunks will be duplicated 
+here since they are already in the existing chunk. 
+
+If `false` the output will only include `assetsByChunkName` which are entry chunks plus
+explicit chunks added by CommonsChunkPlugin
+
+```js
+new AssetsPlugin({allAssets: false})
+```
 
 #### `filename`
 
