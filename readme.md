@@ -220,6 +220,16 @@ explicit chunks added by CommonsChunkPlugin
 new AssetsPlugin({allAssets: false})
 ```
 
+#### `forceAbsolutePath`
+
+Optional. `false` by default.
+
+If `true`, prepends a leading `/` too the `allAssets` and `chunks` property values to make them site-root relative
+
+```js
+new AssetsPlugin({forceAbsolutePath: true})
+```
+
 #### `filename`
 
 Optional. `webpack-assets.json` by default.
