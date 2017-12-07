@@ -7,7 +7,7 @@ var isSourceMap = require('./lib/isSourceMap')
 var createQueuedWriter = require('./lib/output/createQueuedWriter')
 var createOutputWriter = require('./lib/output/createOutputWriter')
 
-function AssetsWebpackPlugin (options) {
+function AssetsWebpackPlugin(options) {
   this.options = merge({}, {
     path: '.',
     filename: 'webpack-assets.json',
@@ -94,20 +94,23 @@ AssetsWebpackPlugin.prototype = {
             let regEx = /chunks/gmi;
             let passTest = regEx.test(key);
 
-            // Trim the hash
+            // Trim the key hash
             let newKey = trimHash(key);
 
-            // Trim the path
+            // Trim the key path
             newKey = trimPath(newKey);
 
-            console.log(key, passTest, newKey);
+            // Fix the value (original key) path
+            let newValue = fixPath(key);
+
+            console.log(newValue, passTest, newKey);
 
             if (passTest) {
               // Separate chunks
-              chunkManifest[newKey] = key;
+              chunkManifest[newKey] = newValue;
             } else {
               // Separate other assets
-              assetManifest[newKey] = key;
+              assetManifest[newKey] = newValue;
             }
           });
 
@@ -127,6 +130,14 @@ AssetsWebpackPlugin.prototype = {
         function trimPath(key) {
           // Get only the filename by removing everything before the last `/`, including `/`
           return key.slice(key.lastIndexOf('/') + 1)
+        }
+
+        function fixPath(value) {
+          // Prepend `/` to the beginning of the string if it doesn't already start with it
+          if (!value.startsWith('/')) {
+            value = `/${value}`
+          }
+          return value;
         }
       }
       /******************************************************************
