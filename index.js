@@ -106,8 +106,7 @@ AssetsWebpackPlugin.prototype = {
               // Fix the value (original key) path
               newValue = fixPath(key);
             }
-
-            console.log(newValue, passTest, newKey);
+            // console.log(newValue, passTest, newKey);
 
             if (passTest) {
               // Separate chunks
