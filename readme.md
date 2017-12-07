@@ -224,7 +224,7 @@ new AssetsPlugin({allAssets: false})
 
 Optional. `false` by default.
 
-If `true`, prepends a leading `/` to the `allAssets` and `chunks` property values to make them site-root relative
+If `true`, prepends a leading `/` to the `allAssets` and `chunks` property values to make them site-root relative. If the value already starts with `/`, it will not be changed.
 
 ```js
 new AssetsPlugin({forceAbsolutePath: true})
