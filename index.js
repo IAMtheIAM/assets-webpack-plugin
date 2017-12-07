@@ -14,7 +14,8 @@ function AssetsWebpackPlugin(options) {
     prettyPrint: false,
     update: false,
     fullPath: true,
-    allAssets: true // new property
+    allAssets: true, // new property
+    forceAbsolutePath: false // new property
   }, options)
   this.writer = createQueuedWriter(createOutputWriter(this.options))
 }
@@ -100,8 +101,11 @@ AssetsWebpackPlugin.prototype = {
             // Trim the key path
             newKey = trimPath(newKey);
 
-            // Fix the value (original key) path
-            let newValue = fixPath(key);
+            let newValue = key;
+            if (self.options.forceAbsolutePath) {
+              // Fix the value (original key) path
+              newValue = fixPath(key);
+            }
 
             console.log(newValue, passTest, newKey);
 
